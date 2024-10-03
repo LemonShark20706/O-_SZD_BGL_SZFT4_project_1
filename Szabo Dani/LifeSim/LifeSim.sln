@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeSim", "LifeSim\LifeSim.csproj", "{C258164E-ACD0-4D11-8DED-FE687E417819}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeSimLib", "LifeSimLib\LifeSimLib.csproj", "{3E60B3B5-70E0-4419-B05D-0D207860C578}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C258164E-ACD0-4D11-8DED-FE687E417819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C258164E-ACD0-4D11-8DED-FE687E417819}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C258164E-ACD0-4D11-8DED-FE687E417819}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C258164E-ACD0-4D11-8DED-FE687E417819}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E60B3B5-70E0-4419-B05D-0D207860C578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E60B3B5-70E0-4419-B05D-0D207860C578}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E60B3B5-70E0-4419-B05D-0D207860C578}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E60B3B5-70E0-4419-B05D-0D207860C578}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1D89A0F6-90AD-4D2A-AFDF-08A280AF8F08}
+	EndGlobalSection
+EndGlobal
