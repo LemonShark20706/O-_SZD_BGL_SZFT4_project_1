@@ -11,14 +11,21 @@ namespace LifeSimLib
         public int MaxGrow {  get; set; }
         Random random = new Random();
 
+        
 
-        public FuNoves(int x,int y, int[,] matrix)
+        public FuNoves(int[,] matrix)
         {
-            if(random.Next(0,50) == 0)
+            bool run = true;
+            while (run)
             {
-                if (matrix[x,y] < 3)
+
+
+                int i = random.Next(1, matrix.GetLength(0) - 1);
+                int j = random.Next(1, matrix.GetLength(1) - 1);
+                if (matrix[i, j] < 3)
                 {
-                    matrix[x, y] += 1;
+                    matrix[i, j] += 1;
+                    run = false;
                 }
             }
 

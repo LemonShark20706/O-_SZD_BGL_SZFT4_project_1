@@ -17,13 +17,7 @@ namespace LifeSim
             while (true)
             {
                 Display(FuMatrix);
-                for (int i = 0; i < FuMatrix.GetLength(0); i++)
-                {
-                    for (int j = 0; j < FuMatrix.GetLength(1); j++)
-                    {
-                        grow = new(i, j, FuMatrix);
-                    }
-                }
+                grow = new(FuMatrix);
             }
 
 
