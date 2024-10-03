@@ -5,25 +5,29 @@ namespace LifeSim
 {
     class Program
     {
+        
         static void Main(string[] args)
         {
-            int[,] FuMatrix = new int[24, 120];
+            int Sor = 24;
+            int Oszlop = 120;
 
-            
-
-            FuNoves grow = new(3,FuMatrix,1);
-            Display(FuMatrix);
-            
-            while (true)
-            {
-                Display(FuMatrix);
-                grow = new(FuMatrix);
-            }
+            int[,] FuMatrix = new int[Sor, Oszlop];
 
 
-           
+
+            //FuNoves grow = new(3,FuMatrix,1);
+            //Display(FuMatrix);
+
+            //while (true)
+            //{
+            //    Display(FuMatrix);
+            //    grow = new(FuMatrix);
+            //}
+            int[,] NyulMatrix = new int[Sor,Oszlop];
 
 
+            NyulMovment Nyul = new(NyulMatrix);
+            Display(NyulMatrix);
 
 
 
