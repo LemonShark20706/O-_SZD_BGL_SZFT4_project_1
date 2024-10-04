@@ -10,7 +10,8 @@ namespace LifeSim
         {
             int Sor = 24;
             int Oszlop = 120;
-            int MinNyulak = 4;
+            int MinNyulak = 40;
+            int FuNovekedesArany = 300;
 
             int[,] FuMatrix = new int[Sor, Oszlop];
 
@@ -26,13 +27,18 @@ namespace LifeSim
             //}
             int[,] NyulMatrix = new int[Sor,Oszlop];
 
-
+            FuNoves grow = new(3, FuMatrix,1);
             NyulMovment Nyul = new(NyulMatrix,MinNyulak);
 
             while (true)
             {
-                Nyul.Feltoltes(NyulMatrix);
+                Console.Clear();
+                Console.WriteLine();
+                Nyul.Lepes(NyulMatrix,FuMatrix);
+                grow = new(FuMatrix,FuNovekedesArany);
                 Display(NyulMatrix);
+                Display(FuMatrix);
+                Console.WriteLine(Nyul.Nap);
                 Console.ReadLine();
             }
 
@@ -41,7 +47,7 @@ namespace LifeSim
 
             void Display(int[,] Matrix)
             {
-                Console.Clear();
+                
                 for (int i = 0; i < Matrix.GetLength(0); i++)
                 {
                     for (int j = 0; j < Matrix.GetLength(1); j++)

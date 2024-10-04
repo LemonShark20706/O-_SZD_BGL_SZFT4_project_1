@@ -13,19 +13,22 @@ namespace LifeSimLib
 
         
 
-        public FuNoves(int[,] matrix)
+        public FuNoves(int[,] matrix,int gyakorisag)
         {
             bool run = true;
             while (run)
             {
-
-
-                int i = random.Next(1, matrix.GetLength(0) - 1);
-                int j = random.Next(1, matrix.GetLength(1) - 1);
-                if (matrix[i, j] < 3)
+                int i;
+                int j;
+                for (int k = 0; k < gyakorisag; k++)
                 {
-                    matrix[i, j] += 1;
-                    run = false;
+                    i = random.Next(1, matrix.GetLength(0));
+                    j = random.Next(1, matrix.GetLength(1));
+                    if (matrix[i, j] < 3)
+                    {
+                        matrix[i, j] += 1;
+                        run = false;
+                    }
                 }
             }
 
@@ -34,7 +37,7 @@ namespace LifeSimLib
         public FuNoves(int grow, int[,]matrix,int def)
         {
             MaxGrow = grow;
-
+            
             for (int i = 0; i < 24; i++)
             {
                 for (int j = 0; j < 120; j++)
