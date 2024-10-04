@@ -10,6 +10,7 @@ namespace LifeSim
         {
             int Sor = 24;
             int Oszlop = 120;
+            int MinNyulak = 4;
 
             int[,] FuMatrix = new int[Sor, Oszlop];
 
@@ -26,8 +27,14 @@ namespace LifeSim
             int[,] NyulMatrix = new int[Sor,Oszlop];
 
 
-            NyulMovment Nyul = new(NyulMatrix);
-            Display(NyulMatrix);
+            NyulMovment Nyul = new(NyulMatrix,MinNyulak);
+
+            while (true)
+            {
+                Nyul.Feltoltes(NyulMatrix);
+                Display(NyulMatrix);
+                Console.ReadLine();
+            }
 
 
 
