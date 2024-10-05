@@ -10,38 +10,52 @@ namespace LifeSim
         {
             int Sor = 24;
             int Oszlop = 120;
-            int MinNyulak = 40;
-            int FuNovekedesArany = 300;
+            int MinNyulak = 40;//Kezdő nyulak amit generál
+            int MaxNyulErtek = 3; //Max amennyit ehet
+            int FuNovekedesArany = 300;//Milyen gyakorisággal nőnek a füvek
+            
+            int MinRokak = 4; //Kezdő rokák spawnolasa
+            int MaxRokaErtek = 20; //Max amennyit ehet
+
 
             int[,] FuMatrix = new int[Sor, Oszlop];
 
+            int[,] NyulMatrix = new int[Sor, Oszlop];
 
+            int[,] RokaMatrix = new int[Sor, Oszlop];
+
+            FuNoves grow = new(3, FuMatrix, 1);
+            NyulMovment Nyul = new(NyulMatrix, MinNyulak, MaxNyulErtek);
 
             //FuNoves grow = new(3,FuMatrix,1);
             //Display(FuMatrix);
-
+            #region funoves_Test
             //while (true)
             //{
             //    Display(FuMatrix);
             //    grow = new(FuMatrix);
             //}
-            int[,] NyulMatrix = new int[Sor,Oszlop];
+            #endregion
+            #region (Nyulmozgas + Eletter)_Test
 
-            FuNoves grow = new(3, FuMatrix,1);
-            NyulMovment Nyul = new(NyulMatrix,MinNyulak);
+            ConsoleKeyInfo gomb = Console.ReadKey();
 
-            while (true)
+            while (gomb.Key != ConsoleKey.Q)
             {
                 Console.Clear();
                 Console.WriteLine();
-                Nyul.Lepes(NyulMatrix,FuMatrix);
-                grow = new(FuMatrix,FuNovekedesArany);
+                Nyul.Lepes(NyulMatrix, FuMatrix);
+                grow = new(FuMatrix, FuNovekedesArany);
                 Display(NyulMatrix);
-                Display(FuMatrix);
-                Console.WriteLine(Nyul.Nap);
-                Console.ReadLine();
-            }
+                gomb = Console.ReadKey();
+                
+                
 
+            }
+            Console.WriteLine("Össz halott nyulak száma: "+Nyul.OsszHaltNyul);
+            Console.WriteLine("Össz született nyulak száma: "+Nyul.OsszSzuletettNyul);
+            Console.WriteLine("Össz nyulak száma: "+Nyul.OsszNyul(NyulMatrix));
+            #endregion
 
 
 
@@ -72,7 +86,6 @@ namespace LifeSim
                     }
                     Console.WriteLine();
                 }
-                Console.ReadLine();
             }
         }
     }

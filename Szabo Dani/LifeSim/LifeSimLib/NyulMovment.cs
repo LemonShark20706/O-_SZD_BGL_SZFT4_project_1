@@ -11,14 +11,21 @@ namespace LifeSimLib
         Random random = new Random();
         private bool run { get; init; }
 
-        static string[] iranyok = { "Fel", "Le", "Jobbra", "Balra" };  
+        public int Nap { get; private set; }
+        public int MaxNyulErtek { get; init; }
 
-        public int Nap { get; set; }
+        #region Kiertekeles
+        public int OsszSzuletettNyul { get; private set; } 
+        public int OsszHaltNyul { get; private set; } 
+        public int OsszNyul(int[,] matrix) => matrix.Cast<int>().Where(x => x > 0).Count();
+        #endregion
 
-        public NyulMovment(int[,] matrix, int minGen)
+        public NyulMovment(int[,] matrix, int minGen, int maxNyulErtek)
         {
             Nap = 1;
             run = true;
+            MaxNyulErtek = maxNyulErtek;
+
             for (int cik = 0; cik < minGen; cik++)
             {
                 run = true;
@@ -30,7 +37,7 @@ namespace LifeSimLib
                     j = random.Next(0, matrix.GetLength(1));
                     if (matrix[i, j] == 0)
                     {
-                        matrix[i, j] = 1;
+                        matrix[i, j] = 1; 
                         run = false;
                     }
                 }
@@ -39,93 +46,127 @@ namespace LifeSimLib
 
         public void Lepes(int[,] matrix, int[,] fuvek)
         {
-            
             int lastX = -1;
             int lastY = -1;
+            bool szaporodott = false;  
 
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 for (int j = 0; j < matrix.GetLength(1); j++)
                 {
-                    if (matrix[i, j] > 0)
+                    if (matrix[i, j] > 0) 
                     {
-                        
                         if (Nap != 0)
                         {
-                            matrix[i, j]--;
+                            if (matrix[i, j] - 1 == 0)
+                            {
+                                OsszHaltNyul++; // Halott nyúl hozzáadása
+                                matrix[i, j] = 0;
+                            }
+                            else
+                            {
+                                matrix[i, j]--; 
+                            }
                         }
 
-                        int NewX, NewY;
-                        bool validMove = false;
+                        int newX = i, newY = j;
 
-                        
-                        do
+                        if (!szaporodott && EllenorizSzomszedok(i, j, matrix))
                         {
-                            
-                            Move(iranyok[random.Next(0, 4)], i, j, out NewX, out NewY);
+                            szaporodott = true;  
+                            EllenorizSzaporodas(i, j, matrix);
+                            OsszSzuletettNyul++; // Született nyúl hozzáadása
+                        }
 
-                            
-                            if (NewX >= 0 && NewX < matrix.GetLength(0) && NewY >= 0 && NewY < matrix.GetLength(1))
-                            {
-                                if (NewX != lastX || NewY != lastY) 
-                                {
-                                    validMove = true;
-                                }
-                            }
-                        } while (!validMove); 
+                        (newX, newY) = KivalasztLegjobbLepes(i, j, matrix, fuvek, lastX, lastY);
 
-                        
-                        if (matrix[NewX, NewY] == 0)
+                        if (matrix[newX, newY] == 0) 
                         {
                             int jelenlegiErtek = matrix[i, j];
+                            int szukseges = Math.Min(MaxNyulErtek - jelenlegiErtek, fuvek[newX, newY]);
+                            matrix[newX, newY] = jelenlegiErtek + szukseges;
+                            fuvek[newX, newY] -= szukseges;
 
-                            
-                            int szukseges = Math.Min(3 - jelenlegiErtek, fuvek[i, j]);
-
-                            
-                            matrix[NewX, NewY] = jelenlegiErtek + szukseges;
-
-                            
-                            fuvek[i, j] -= szukseges;
-
-                            
-                            matrix[i, j] = 0;
-
-                            
-                            lastX = i;
-                            lastY = j;
+                            lastX = newX; 
+                            lastY = newY;
                         }
                     }
                 }
             }
-            Nap++; 
+            Nap++;
         }
 
-
-
-        static void Move(string irany, int oldX, int oldY, out int NewX, out int NewY)
+        private bool EllenorizSzomszedok(int x, int y, int[,] matrix)
         {
-         
-            NewX = oldX;
-            NewY = oldY;
+            int[,] iranyok = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
 
-            
-            if (irany == "Fel")
+            for (int d = 0; d < iranyok.GetLength(0); d++)
             {
-                NewX = oldX - 1;  
+                int ujX = x + iranyok[d, 0];
+                int ujY = y + iranyok[d, 1];
+
+                if (ujX >= 0 && ujX < matrix.GetLength(0) && ujY >= 0 && ujY < matrix.GetLength(1))
+                {
+                    if (matrix[ujX, ujY] > 0) 
+                    {
+                        return true;
+                    }
+                }
             }
-            else if (irany == "Le")
+
+            return false;
+        }
+
+        private void EllenorizSzaporodas(int x, int y, int[,] matrix)
+        {
+            int[,] iranyok = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+            List<(int, int)> uresMezok = new List<(int, int)>();
+
+            for (int d = 0; d < iranyok.GetLength(0); d++)
             {
-                NewX = oldX + 1;  
+                int ujX = x + iranyok[d, 0];
+                int ujY = y + iranyok[d, 1];
+
+                if (ujX >= 0 && ujX < matrix.GetLength(0) && ujY >= 0 && ujY < matrix.GetLength(1))
+                {
+                    if (matrix[ujX, ujY] == 0) 
+                    {
+                        uresMezok.Add((ujX, ujY));
+                    }
+                }
             }
-            else if (irany == "Jobbra")
+
+            if (uresMezok.Count > 0)
             {
-                NewY = oldY + 1;  
+                var veletlenUresMezo = uresMezok[random.Next(uresMezok.Count)];
+                matrix[veletlenUresMezo.Item1, veletlenUresMezo.Item2] = 1; 
             }
-            else if (irany == "Balra")
+        }
+
+        private (int, int) KivalasztLegjobbLepes(int x, int y, int[,] matrix, int[,] fuvek, int lastX, int lastY)
+        {
+            int legjobbX = x, legjobbY = y;
+            int maxFu = -1;
+
+            int[,] iranyok = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+
+            for (int d = 0; d < iranyok.GetLength(0); d++)
             {
-                NewY = oldY - 1;  
+                int ujX = x + iranyok[d, 0];
+                int ujY = y + iranyok[d, 1];
+
+                if (ujX >= 0 && ujX < matrix.GetLength(0) && ujY >= 0 && ujY < matrix.GetLength(1))
+                {
+                    if (fuvek[ujX, ujY] > maxFu && (ujX != lastX || ujY != lastY))
+                    {
+                        legjobbX = ujX;
+                        legjobbY = ujY;
+                        maxFu = fuvek[ujX, ujY];
+                    }
+                }
             }
+
+            return (legjobbX, legjobbY);
         }
     }
 }
