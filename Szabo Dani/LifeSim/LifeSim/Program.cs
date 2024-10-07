@@ -1,5 +1,6 @@
 ﻿using LifeSimLib;
 using System;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LifeSim
 {
@@ -13,7 +14,118 @@ namespace LifeSim
             const string author = "                    ██╗     ██╗███████╗███████╗                                              \r\n                    ██║     ██║██╔════╝██╔════╝                                              \r\n                    ██║     ██║█████╗  █████╗                                                \r\n                    ██║     ██║██╔══╝  ██╔══╝                                                \r\n                    ███████╗██║██║     ███████╗                                              \r\n                    ╚══════╝╚═╝╚═╝     ╚══════╝                                              \r\n                                                                         \r\n███████╗██╗███╗   ███╗██╗   ██╗██╗      █████╗ ████████╗ ██████╗ ██████╗ \r\n██╔════╝██║████╗ ████║██║   ██║██║     ██╔══██╗╚══██╔══╝██╔═══██╗██╔══██╗\r\n███████╗██║██╔████╔██║██║   ██║██║     ███████║   ██║   ██║   ██║██████╔╝\r\n╚════██║██║██║╚██╔╝██║██║   ██║██║     ██╔══██║   ██║   ██║   ██║██╔══██╗\r\n███████║██║██║ ╚═╝ ██║╚██████╔╝███████╗██║  ██║   ██║   ╚██████╔╝██║  ██║\r\n╚══════╝╚═╝╚═╝     ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝";
 
 
-            Settings();
+            List<string> Valasz = new List<string>();
+
+            void Startup()
+            {
+                Kerdes("Milyen OP-rendszert használsz: ", ["Windows", "Linux"], ConsoleColor.Cyan);
+                Kerdes("Az emoji-kat megtudod jeleníteni: ", ["Igen", "Nem"], ConsoleColor.Cyan);
+
+                for (int i = 0; i < 20; i++)
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write("#");
+                    Console.ResetColor();
+                    Thread.Sleep(30);
+                }
+
+                Menu();
+            }
+
+            Startup();
+            
+
+            void Kerdes(string Question, string[] Answers, ConsoleColor KerdesSzin = ConsoleColor.White, ConsoleColor KerdesHatter = ConsoleColor.Black, ConsoleColor ValaszHatter = ConsoleColor.Black, ConsoleColor ValaszSzin = ConsoleColor.White)
+            {
+                int Answer = 0;
+                bool Exit = false;
+
+                Console.CursorVisible = false;
+
+                while (!Exit)
+                {
+                    Console.ForegroundColor = KerdesSzin;
+                    Console.BackgroundColor = KerdesHatter;
+                    // Fő kérdés
+                    Console.Write(Question);
+                    Console.ResetColor();
+                    for (int i = 0; i < Answers.Length; i++)
+                    {
+                        if (i == Answer)
+                        {
+                            Console.Write("\x1b[4m");
+                            // Ha kivan választva a válasz
+                            Console.Write($"{Answers[i]}");
+                        }
+                        else
+                        {
+                            Console.Write("\x1b[24m");
+                            // Egyébb válasz
+                            Console.Write($"{Answers[i]}");
+                        }
+                        Console.Write("\x1b[24m");
+                        if (i < Answers.Length - 1)
+                        {
+                            // Elválasztás
+                            Console.Write(" \\ ");
+                        }
+                    }
+                    Console.ResetColor();
+                    Select();
+                    Console.SetCursorPosition(0, Console.CursorTop);
+
+                    // Kiírunk annyi szóközt, amennyi a konzol szélessége
+                    Console.Write(new string(' ', Console.WindowWidth));
+
+                    // Visszaállítjuk a kurzort a sor elejére
+                    Console.SetCursorPosition(0, Console.CursorTop);
+                }
+                void SorCsere()//Ez törli vissza és írja ki a végén 
+                {
+                    Console.SetCursorPosition(0, Console.CursorTop);
+
+                    // Kiírunk annyi szóközt, amennyi a konzol szélessége
+                    Console.Write(new string(' ', Console.WindowWidth));
+
+                    // Visszaállítjuk a kurzort a sor elejére
+                    Console.SetCursorPosition(0, Console.CursorTop);
+                    Console.ForegroundColor = KerdesSzin;
+                    Console.BackgroundColor = KerdesHatter;
+                    Console.Write($"{Question}");
+                    Console.BackgroundColor = ValaszHatter;
+                    Console.ForegroundColor = ValaszSzin;
+                    Valasz.Add(Answers[Answer]);
+                    Console.Write($" {Answers[Answer]} ");
+                    Console.ResetColor();
+                    Console.WriteLine();
+                }
+
+                void Select()
+                {
+                    ConsoleKeyInfo gomb = Console.ReadKey();
+                    if (gomb.Key == ConsoleKey.Enter)
+                    {
+                        Exit = true;
+                        SorCsere();
+                    }
+                    else if (gomb.Key == ConsoleKey.A || gomb.Key == ConsoleKey.LeftArrow)
+                    {
+                        if (Answer - 1 >= 0)
+                        {
+                            Answer--;
+                        }
+                    }
+                    else if (gomb.Key == ConsoleKey.D || gomb.Key == ConsoleKey.RightArrow)
+                    {
+                        if (Answer + 1 <= Answers.Length - 1)
+                        {
+                            Answer++;
+                        }
+                    }
+                }
+            }
+
+            
 
 
             void Settings()
@@ -37,18 +149,30 @@ namespace LifeSim
 
                     ConsoleKeyInfo gomb = Console.ReadKey();
 
-                    if (gomb.Key == ConsoleKey.Escape || gomb.Key == ConsoleKey.Enter)
+                    if (gomb.Key == ConsoleKey.Enter)
                     {
-                        exit = true;
+                        bool isValid = valtozok.Where(x => x == "").Count() > 0;
+                        if (!isValid)
+                        {
+                            exit = true;
+                            Inditas();
+                        }
+                        
+                    }
+
+                    else if (gomb.Key == ConsoleKey.Escape)
+                    {
+                        exit = false;
                         try
                         {
-                            Inditas();
+                            Menu();
                         }
                         catch (Exception e)
                         {
                             Console.WriteLine($"Hiányos funkció lista: {e.Message}");
                         }
                     }
+
                     else if (gomb.Key == ConsoleKey.S || gomb.Key == ConsoleKey.DownArrow)
                     {
                         if (Diff + 1 < Szintek.Length)
@@ -111,7 +235,86 @@ namespace LifeSim
                 }
             }
 
+            
 
+            void Menu()
+            {
+                string[] Szintek = { "Egyedi config","Indítás" };
+                Action[] funkciok = { Settings,Inditas };
+
+                #region menu
+
+                bool exit = true;
+                int Diff = 0;
+                while (exit)
+                {
+
+                    string spacing = "\t\t\t";
+
+
+                    Console.Clear();
+                    DisplayIntro(author, spacing);
+
+                    Print(spacing);
+                    ConsoleKeyInfo gomb = Console.ReadKey();
+                    if (gomb.Key == ConsoleKey.Escape || gomb.Key == ConsoleKey.Enter)
+                    {
+                        exit = false;
+                        try
+                        {
+                            funkciok[Diff].Invoke();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Hiányos funkció lista: {e.Message}");
+                        }
+                    }
+                    else if (gomb.Key == ConsoleKey.S || gomb.Key == ConsoleKey.DownArrow)
+                    {
+                        if (Diff + 1 < Szintek.Length)
+                        {
+                            Diff++;
+                        }
+                    }
+                    else if (gomb.Key == ConsoleKey.W || gomb.Key == ConsoleKey.UpArrow)
+                    {
+                        if (Diff - 1 >= 0)
+                        {
+                            Diff--;
+                        }
+                    }
+
+                }
+
+                void Print(string spaceing)
+                {
+                    Console.CursorVisible = false;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"\n{spaceing}\t\t     \x1b[3mFőmenu indítási opciók\x1b[0m\n");
+
+                    Console.WriteLine($"\x1b[91m{spaceing + "\t\t  "}{"╭".PadRight(30, '─')}╮");
+
+                    for (int i = 0; i < Szintek.Length; i++)
+                    {
+                        Console.Write(spaceing + "\t\t  ");
+                        if (i == Diff)
+                        {
+
+                            Console.Write($"\u001b[91m│\t   \x1b[93m> \x1b[92m{Szintek[i]}\x1b[39m{"".PadRight(19 - Szintek[i].Length, ' ')}\u001b[91m│");
+                        }
+                        else
+                        {
+                            Console.Write($"\u001b[91m│\t   \x1b[39m{Szintek[i]}{"".PadRight(21 - Szintek[i].Length, ' ')}\u001b[91m│");
+                        }
+                        Console.WriteLine();
+                        Console.ResetColor();
+
+                    }
+                    Console.WriteLine($"\x1b[91m{spaceing + "\t\t  "}{"╰".PadRight(30, '─')}╯");
+                    Console.ResetColor();
+                }
+                #endregion
+            }
 
 
 
@@ -128,11 +331,13 @@ namespace LifeSim
                 }
                 Console.ResetColor();
             }
-            DisplayIntro(author, "\t\t\t");
+            
 
             void Inditas()
             {
+                Console.Clear();
                 Console.WriteLine(1);
+                
             }
 
             
